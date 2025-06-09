@@ -3,7 +3,7 @@ using ApbdTest2.Domain.Models;
 
 namespace ApbdTest2.Application.Mappers;
 
-public interface ICustomerMapper
+public interface IConcertMapper
 {
-    CustomerPurchasesResponseDto ToCustomerPurchasesDto(Customer customer);
+    ConcertResponseDto ToConcertResponseDto(Concert concert);
 }
