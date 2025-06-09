@@ -46,6 +46,11 @@ public class CustomerService(IUnitOfWork unitOfWork, ICustomerRepository custome
                     throw new NotFoundException($"Concert with name = '{p.ConcertName}' does not exist");
                 }
 
+                if (customer.PurchasedTickets.Count(pt => pt.TicketConcert.ConcertId == concert.ConcertId) >= 5)
+                {
+                    throw new ConflictException($"Customer can not purchase more than 5 tickets for a concert");
+                }
+
                 var ticket = new Ticket()
                 {
                     SerialNumber = Guid.NewGuid().ToString(),

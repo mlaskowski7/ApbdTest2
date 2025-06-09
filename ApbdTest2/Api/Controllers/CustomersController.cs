@@ -1,5 +1,6 @@
 using ApbdTest2.Api.Contracts.Request;
 using ApbdTest2.Api.Contracts.Response;
+using ApbdTest2.Application.Exceptions;
 using ApbdTest2.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,6 +52,14 @@ public class CustomersController(ICustomerService customerService) : ControllerB
             }
 
             return CreatedAtAction(nameof(GetCustomerPurchasesById), customer);
+        }
+        catch (ConflictException ex)
+        {
+            return Conflict(ex.Message);
+        }
+        catch (NotFoundException ex)
+        {
+            return NotFound(ex.Message);
         }
         catch (Exception ex)
         {
