@@ -1,3 +1,4 @@
+using ApbdTest2.Api.Contracts.Request;
 using ApbdTest2.Api.Contracts.Response;
 using ApbdTest2.Application.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -11,15 +12,49 @@ public class CustomersController(ICustomerService customerService) : ControllerB
     [HttpGet("{customerId:int}/purchases")]
     [ProducesResponseType(typeof(CustomerPurchasesResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetCustomerPurchasesById([FromRoute] int customerId,
         CancellationToken cancellationToken = default)
     {
-        var customer = await customerService.GetCustomerPurchasesByIdAsync(customerId, cancellationToken);
-        if (customer == null)
+        try
         {
-            return NotFound($"Customer with id = {customerId} does not exist");
+            var customer = await customerService.GetCustomerPurchasesByIdAsync(customerId, cancellationToken);
+            if (customer == null)
+            {
+                return NotFound($"Customer with id = {customerId} does not exist");
+            }
+
+            return Ok(customer);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected server error occured");
         }
         
-        return Ok(customer);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(CustomerPurchasesResponseDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status409Conflict)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> CreateCustomerPurchases(
+        [FromBody] CreateCustomerPurchasesRequestDto customerPurchasesRequestDto)
+    {
+        try
+        {
+            var customer = await customerService.CreatePurchasesForCustomerAsync(customerPurchasesRequestDto);
+            if (customer == null)
+            {
+                return Conflict($"Customer cant purchase more than 5 tickets for a concert");
+            }
+
+            return CreatedAtAction(nameof(GetCustomerPurchasesById), customer);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected server error occured");
+        }
     }
 }

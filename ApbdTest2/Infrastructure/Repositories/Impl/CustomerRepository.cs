@@ -18,4 +18,11 @@ public class CustomerRepository(ConcertsDbContext dbContext) : ICustomerReposito
             .ThenInclude(tc => tc.Concert)
             .FirstOrDefaultAsync(cancellationToken);
     }
+
+    public async Task<Customer> CreateCustomerAsync(Customer customer, CancellationToken cancellationToken = default)
+    {
+       var saved = await _customers.AddAsync(customer, cancellationToken); 
+       await dbContext.SaveChangesAsync(cancellationToken);
+       return saved.Entity;
+    }
 }

@@ -5,4 +5,6 @@ namespace ApbdTest2.Infrastructure.Repositories;
 public interface ICustomerRepository
 {
    Task<Customer?> FindCustomerWithPurchasesByIdAsync(int customerId, CancellationToken cancellationToken = default);
+   
+   Task<Customer> CreateCustomerAsync(Customer customer, CancellationToken cancellationToken = default);
 }

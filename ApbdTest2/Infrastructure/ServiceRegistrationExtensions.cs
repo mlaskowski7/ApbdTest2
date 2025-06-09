@@ -1,4 +1,5 @@
 using ApbdTest2.Infrastructure.Database;
+using ApbdTest2.Infrastructure.Persistance;
 using ApbdTest2.Infrastructure.Repositories;
 using ApbdTest2.Infrastructure.Repositories.Impl;
 using Microsoft.EntityFrameworkCore;
@@ -12,11 +13,11 @@ public static class ServiceRegistrationExtensions
         return services.AddDbContext<ConcertsDbContext>(opt =>
         {
             opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection") ?? throw new ArgumentException("Default connection string must be set"));
-        }).AddRepositories();
+        }).AddRepositories().AddScoped<IUnitOfWork, UnitOfWork>();
     }
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        return services.AddScoped<ICustomerRepository, CustomerRepository>();
+        return services.AddScoped<ICustomerRepository, CustomerRepository>().AddScoped<IPurchasedTicketRepository, PurchasedTicketRepository>().AddScoped<IConcertRepository, ConcertRepository>();
     }
 }
