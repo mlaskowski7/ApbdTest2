@@ -13,4 +13,6 @@ public class TicketConcert
     public virtual Ticket Ticket { get; set; }
     
     public virtual Concert Concert { get; set; }
+
+    public virtual List<PurchasedTicket> PurchasedTickets { get; set; } = [];
 }

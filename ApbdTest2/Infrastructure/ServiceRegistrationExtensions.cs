@@ -1,10 +1,16 @@
+using ApbdTest2.Infrastructure.Database;
+using Microsoft.EntityFrameworkCore;
+
 namespace ApbdTest2.Infrastructure;
 
 public static class ServiceRegistrationExtensions
 {
     public static IServiceCollection AddInfraServices(this IServiceCollection services, IConfiguration configuration)
     {
-        return services.AddRepositories();
+        return services.AddDbContext<ConcertsDbContext>(opt =>
+        {
+            opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection") ?? throw new ArgumentException("Default connection string must be set"));
+        }).AddRepositories();
     }
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
