@@ -51,7 +51,7 @@ public class CustomersController(ICustomerService customerService) : ControllerB
                 return Conflict($"Customer cant purchase more than 5 tickets for a concert");
             }
 
-            return CreatedAtAction(nameof(GetCustomerPurchasesById), customer);
+            return StatusCode(201, customer);
         }
         catch (ConflictException ex)
         {
