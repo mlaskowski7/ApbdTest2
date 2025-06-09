@@ -1,4 +1,6 @@
 using ApbdTest2.Infrastructure.Database;
+using ApbdTest2.Infrastructure.Repositories;
+using ApbdTest2.Infrastructure.Repositories.Impl;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApbdTest2.Infrastructure;
@@ -15,6 +17,6 @@ public static class ServiceRegistrationExtensions
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        return services;
+        return services.AddScoped<ICustomerRepository, CustomerRepository>();
     }
 }

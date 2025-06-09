@@ -10,14 +10,14 @@ public class CustomersController(ICustomerService customerService) : ControllerB
 {
     [HttpGet("{customerId:int}/purchases")]
     [ProducesResponseType(typeof(CustomerPurchasesResponseDto), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetCustomerPurchasesById([FromRoute] int customerId,
         CancellationToken cancellationToken = default)
     {
         var customer = await customerService.GetCustomerPurchasesByIdAsync(customerId, cancellationToken);
         if (customer == null)
         {
-            return NotFound();
+            return NotFound($"Customer with id = {customerId} does not exist");
         }
         
         return Ok(customer);
